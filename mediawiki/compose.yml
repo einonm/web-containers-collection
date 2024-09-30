@@ -1,0 +1,42 @@
+# MediaWiki with MariaDB
+#
+# Access via "http://localhost:8080"
+#   (or "http://$(docker-machine ip):8080" if using docker-machine)
+services:
+  mediawiki:
+    image: mediawiki:1.40.1
+    restart: always
+    volumes:
+      - ./images:/var/www/html/images
+      - ./skins:/var/www/html/skins
+      - ./LocalSettings.php:/var/www/html/LocalSettings.php
+    networks:
+      proxy-net:
+      db-net:
+    environment:
+      - "NETWORK_ACCESS=internal"
+      - "VIRTUAL_HOST=wiki.example.com"
+      - "LETSENCRYPT_HOST=wiki.example.com"
+    expose:
+      - "80"
+
+  # This key also defines the name of the database host used during setup instead of the default "localhost"
+  database:
+    image: mariadb:11.1.2
+    restart: always
+    env_file:
+      # @see https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/DefaultSettings.php
+      - ./mariadb.env
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      db-net:
+
+volumes:
+  db:
+
+networks:
+  proxy-net:
+    external: true
+  db-net:
+    external: true

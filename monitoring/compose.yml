@@ -1,0 +1,53 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    expose:
+      - 9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      proxy-net:
+    depends_on:
+      - cadvisor
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    expose:
+      - 8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      proxy-net:
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    networks:
+      proxy-net:
+    expose:
+      - 6379
+
+  grafana:
+    image: grafana/grafana
+    environment:
+       - VIRTUAL_HOST=monitor.example.com
+       - NETWORK_ACCESS=internal
+    networks:
+      proxy-net:
+    volumes:
+      - ./datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+    expose:
+      - 3000
+
+networks:
+  proxy-net:
+    external: true

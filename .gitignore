@@ -1,0 +1,7 @@
+mediawiki/mariadb.env
+mediawiki/skins/Vector
+mediawiki/images/*
+mediawiki/backups/*
+devops1/html
+devops2/html/*
+devops2/bokeh/*

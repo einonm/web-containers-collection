@@ -1,0 +1,41 @@
+services:
+  portainer:
+    container_name: "portainer"
+    entrypoint:
+      - "/portainer"
+    image: "portainer/portainer-ce"
+    ipc: "private"
+    labels:
+      com.docker.desktop.extension.api.version: ">= 0.2.2"
+      com.docker.desktop.extension.icon: "https://portainer-io-assets.sfo2.cdn.digitaloceanspaces.com/logos/portainer.png"
+      com.docker.extension.additional-urls: "[{\"title\":\"Website\",\"url\":\"https://www.portainer.io?utm_campaign=DockerCon&utm_source=DockerDesktop\"\
+        },{\"title\":\"Documentation\",\"url\":\"https://docs.portainer.io\"},{\"title\":\"Support\",\"\
+        url\":\"https://join.slack.com/t/portainer/shared_invite/zt-txh3ljab-52QHTyjCqbe5RibC2lcjKA\"\
+        }]"
+      com.docker.extension.publisher-url: "https://www.portainer.io"
+      io.portainer.server: "true"
+      org.opencontainers.image.description: "Docker container management made simple, with the world’s\
+        \ most popular GUI-based container management platform."
+      org.opencontainers.image.title: "Portainer"
+      org.opencontainers.image.vendor: "Portainer.io"
+    networks:
+      proxy-net:
+    restart: "always"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "portainer_data:/data"
+    working_dir: "/"
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - NETWORK_ACCESS=internal
+      - VIRTUAL_HOST=portainer.example.com
+      - VIRTUAL_PORT=9000
+    expose:
+      - "9000"
+
+volumes:
+  portainer_data:
+
+networks:
+  proxy-net:
+    external: true

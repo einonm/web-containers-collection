@@ -1,0 +1,19 @@
+services:
+  devops1:
+    image: "nginx:latest"
+    container_name: "devops1"
+    volumes:
+      - "./html:/usr/share/nginx/html"
+    environment:
+      - "VIRTUAL_HOST=devops1.example.com"
+      - "LETSENCRYPT_HOST=devops1.example.com"
+    restart: "always"
+    networks:
+      proxy-net:
+    expose:
+      - "80"
+      - "443"
+
+networks:
+  proxy-net:
+    external: true

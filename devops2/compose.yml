@@ -1,0 +1,28 @@
+services:
+
+  nginx:
+    image: nginx-autoindex
+    expose:
+      - 80
+    environment:
+      - "VIRTUAL_HOST=devops2.example.com"
+      - "LETSENCRYPT_HOST=devops2.example.com"
+      - BACKEND=app
+    volumes:
+      - "./html:/usr/share/nginx/html"
+    restart: "always"
+    networks:
+      proxy-net:
+
+  bokeh:
+    image:
+      bokeh
+    environment:
+      - PORT=5100
+      - BOKEH_RESOURCES=cdn
+    networks:
+      proxy-net:
+
+networks:
+  proxy-net:
+    external: true
